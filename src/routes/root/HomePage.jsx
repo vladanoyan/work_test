@@ -9,8 +9,8 @@ import Map from '../../routes/root/maps';
 import cs from './HomePage.pcss';
 
 class HomePage extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       value: '',
       items: [
@@ -41,12 +41,12 @@ class HomePage extends React.Component {
 
   del(e) {
     const array = this.state.items;
-    console.log(e.target.parentElement.key);
-    const index = array.indexOf(e.target.parentElement);
+    const index = array.indexOf(e);
     array.splice(index, 1);
     this.setState({ items: array });
   }
   render() {
+    // console.log(ti, 'HomePage');
     const updatedList = this.state.items.filter((item) => {
       return item.text.toLowerCase().search(
         this.state.value.toLowerCase()) !== -1;
@@ -60,7 +60,7 @@ class HomePage extends React.Component {
         <p>Lat: {item.lat}</p>
         <p>lng: {item.lng}</p>
         <span
-          onClick={this.del.bind(this)}
+          onClick={this.del.bind(this, item)}
           role="presentation"
         >x</span></li>),
     );

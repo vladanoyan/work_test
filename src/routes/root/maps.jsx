@@ -1,17 +1,37 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import image from '../../resource/images/dd.png';
 import cs from './HomePage.pcss';
 
 class Maps extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
     };
   }
   componentDidMount() {
     const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let labelIndex = -1;
-    const locationArray = [];
+    const locationArray = [
+      {
+        text: 'Yerevan',
+        lat: 12684,
+        lng: 992684,
+        key: 44,
+      },
+      {
+        text: 'Paris',
+        lat: 444,
+        lng: 8745,
+        key: 234,
+      },
+      {
+        text: 'England',
+        lat: 82947565,
+        lng: 8792,
+        key: 90,
+      },
+    ];
     function addMarker(location, map) {
       // Adds a marker to the map.
       locationArray.unshift({
@@ -20,7 +40,7 @@ class Maps extends React.Component {
         id: Date.now(),
         name: 'Name',
       });
-      console.log(locationArray);
+      console.log(locationArray, 'Maps');
       // Add the marker at the clicked location, and add the next-available label
       const marker = new window.google.maps.Marker({
         position: location,
@@ -59,5 +79,12 @@ class Maps extends React.Component {
     );
   }
 }
-
+Maps.propTypes = {
+  locationArray: PropTypes.shape({
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+};
 export default Maps;

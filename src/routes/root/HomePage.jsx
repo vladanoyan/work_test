@@ -16,38 +16,27 @@ class HomePage extends React.Component {
       items: [
         {
           text: 'Yerevan',
-          key: 12684,
+          lat: 12684,
+          lng: 992684,
+          key: 44,
         },
         {
-          text: 'Israel',
-          key: 34354,
-        },
-        {
-          text: 'United State',
-          key: 9235,
+          text: 'Paris',
+          lat: 444,
+          lng: 8745,
+          key: 234,
         },
         {
           text: 'England',
-          key: 7583,
+          lat: 82947565,
+          lng: 8792,
+          key: 90,
         },
       ],
     };
   }
   hendleChange(event) {
     this.setState({ value: event.target.value });
-  }
-  addText(e) {
-    const itemArray = this.state.items;
-    if (this.state.value !== '') {
-      itemArray.unshift({
-        text: this.state.value,
-        key: Date.now(),
-      });
-      console.log(this.state.items);
-    }
-    this.setState({ value: '' });
-    this.setState({ items: itemArray });
-    e.preventDefault();
   }
 
   del(e) {
@@ -68,7 +57,8 @@ class HomePage extends React.Component {
         key={item.key}
       >
         <p>Place: {item.text}</p>
-        <p>Location: {item.key}</p>
+        <p>Lat: {item.lat}</p>
+        <p>lng: {item.lng}</p>
         <span
           onClick={this.del.bind(this)}
           role="presentation"
@@ -82,17 +72,13 @@ class HomePage extends React.Component {
             <Col md="3" xs="12" className={cs.left}>
               <form>
                 <input
+                  placeholder="Filter Items"
                   type="text"
                   name="name"
                   onChange={this.hendleChange.bind(this)}
                   value={this.state.value}
+                  className={cs.filterInput}
                 />
-                <button
-                  onClick={this.addText.bind(this)}
-                  className={cs.Btn}
-                >
-                  Add
-                </button>
               </form>
               <div className={cs.items}>
                 <ul className={cs.ul} >

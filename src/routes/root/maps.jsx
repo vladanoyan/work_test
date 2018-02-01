@@ -1,5 +1,5 @@
 import React from 'react';
-import image1 from '../../resource/images/dd.png';
+import image from '../../resource/images/dd.png';
 import cs from './HomePage.pcss';
 
 class Maps extends React.Component {
@@ -11,15 +11,22 @@ class Maps extends React.Component {
   componentDidMount() {
     const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let labelIndex = -1;
-    // Adds a marker to the map.
+    const locationArray = [];
     function addMarker(location, map) {
+      // Adds a marker to the map.
+      locationArray.unshift({
+        lat: location.lat,
+        lng: location.lng,
+        id: Date.now(),
+        name: 'Name',
+      });
+      console.log(locationArray);
       // Add the marker at the clicked location, and add the next-available label
-      // from the array of alphabetical characters.
       const marker = new window.google.maps.Marker({
         position: location,
         label: labels[labelIndex += 1 % labels.length],
         map,
-        icon: image1,
+        icon: image,
         draggable: true,
         animation: window.google.maps.Animation.DROP,
       });

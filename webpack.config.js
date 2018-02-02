@@ -43,7 +43,7 @@ module.exports = (env) => {
      */
     output: {
       filename: 'bundle-[hash].js',
-      path: path.resolve(__dirname, 'docs'),
+      path: path.resolve(__dirname, 'dist'),
       publicPath: env.NODE_ENV === 'production' ? '/Test-React/' : '/',
     },
 

@@ -5,7 +5,7 @@ import {
   Col,
   Row,
 } from 'reactstrap';
-import Map from '../../routes/root/maps';
+import Maps from '../../routes/root/maps';
 import cs from './HomePage.pcss';
 
 class HomePage extends React.Component {
@@ -13,30 +13,14 @@ class HomePage extends React.Component {
     super(props);
     this.state = {
       value: '',
-      items: [
-        {
-          text: 'Yerevan',
-          lat: 12684,
-          lng: 992684,
-          key: 44,
-        },
-        {
-          text: 'Paris',
-          lat: 444,
-          lng: 8745,
-          key: 234,
-        },
-        {
-          text: 'England',
-          lat: 82947565,
-          lng: 8792,
-          key: 90,
-        },
-      ],
+      items: [],
     };
   }
-  hendleChange(event) {
-    this.setState({ value: event.target.value });
+
+  onNewLocation(item) {
+    const items = this.state.items;
+    items.push(item);
+    this.setState({ items });
   }
 
   del(e) {
@@ -45,18 +29,41 @@ class HomePage extends React.Component {
     array.splice(index, 1);
     this.setState({ items: array });
   }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+  }
+  editing(item, e) {
+    const newValue = e.target.value;
+    const { items } = this.state;
+    const index = items.indexOf(item);
+
+    items[index].name = newValue;
+
+    this.setState({ items });
+  }
+  keyPress(e) {
+    if (e.which === 13) {
+      console.log(this.state.items);
+      e.preventDefault();
+    }
+  }
   render() {
-    // console.log(ti, 'HomePage');
     const updatedList = this.state.items.filter((item) => {
-      return item.text.toLowerCase().search(
+      return item.name.toLowerCase().search(
         this.state.value.toLowerCase()) !== -1;
     });
-
     const listing = updatedList.map((item) =>
       (<li
-        key={item.key}
+        key={item.id}
       >
-        <p>Place: {item.text}</p>
+        <p>Edit Place: <input
+          className={cs.edit}
+          onChange={this.editing.bind(this, item)}
+          value={item.name}
+          onKeyPress={this.keyPress.bind(this)}
+        />
+        </p>
         <p>Lat: {item.lat}</p>
         <p>lng: {item.lng}</p>
         <span
@@ -75,7 +82,7 @@ class HomePage extends React.Component {
                   placeholder="Filter Items"
                   type="text"
                   name="name"
-                  onChange={this.hendleChange.bind(this)}
+                  onChange={this.handleChange.bind(this)}
                   value={this.state.value}
                   className={cs.filterInput}
                 />
@@ -87,7 +94,10 @@ class HomePage extends React.Component {
               </div>
             </Col>
             <Col md="9" xs="12" className={cs.right}>
-              <Map />
+              <Maps
+                locationArray={this.state.items}
+                onNewLocation={this.onNewLocation.bind(this)}
+              />
             </Col>
           </Row>
         </Container>

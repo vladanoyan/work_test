@@ -6,72 +6,75 @@ import cs from './HomePage.pcss';
 class Maps extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+
+    this.markers = [];
+    this.map = null;
   }
+
   componentDidMount() {
-    const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let labelIndex = -1;
-    const locationArray = [
-      {
-        text: 'Yerevan',
-        lat: 12684,
-        lng: 992684,
-        key: 44,
-      },
-      {
-        text: 'Paris',
-        lat: 444,
-        lng: 8745,
-        key: 234,
-      },
-      {
-        text: 'England',
-        lat: 82947565,
-        lng: 8792,
-        key: 90,
-      },
-    ];
-    function addMarker(location, map) {
-      // Adds a marker to the map.
-      locationArray.unshift({
-        lat: location.lat,
-        lng: location.lng,
-        id: Date.now(),
+    const addMarker = (location) => {
+      const newLocation = {
         name: 'Name',
-      });
-      console.log(locationArray, 'Maps');
-      // Add the marker at the clicked location, and add the next-available label
-      const marker = new window.google.maps.Marker({
-        position: location,
-        label: labels[labelIndex += 1 % labels.length],
-        map,
-        icon: image,
-        draggable: true,
-        animation: window.google.maps.Animation.DROP,
-      });
-      const liText = '<div>Title</div>';
-      const infowindow = new window.google.maps.InfoWindow({
-        content: liText,
-      });
-      marker.addListener('click', () => {
-        infowindow.open(map, marker);
-      });
-    }
-    const bangalore = { lat: 12.97, lng: 77.59 };
-    const map = new window.google.maps.Map(document.getElementById('map'), {
+        lat: location.lat(),
+        lng: location.lng(),
+        id: Date.now(),
+      };
+
+      // Adds a marker to the map.
+      this.props.onNewLocation(newLocation);
+    };
+
+    this.map = new window.google.maps.Map(document.getElementById('map'), {
       zoom: 12,
-      center: bangalore,
-    });
-    // This event listener calls addMarker() when the map is clicked.
-    window.google.maps.event.addListener(map, 'click', (event) => {
-      addMarker(event.latLng, map);
+      center: {
+        lat: 12.97,
+        lng: 77.59,
+      },
     });
 
-    // Add a marker at the center of the map.
-    addMarker(bangalore, map);
+    // This event listener calls addMarker() when the map is clicked.
+    window.google.maps.event.addListener(this.map, 'click', (event) => {
+      addMarker(event.latLng);
+    });
   }
+
+  addMarkers() {
+    const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let labelIndex = -1;
+
+    for (let i = 0; i < this.props.locationArray.length; i += 1) {
+      // Add the marker at the clicked location, and add the next-available label
+      const marker = new window.google.maps.Marker({
+        position: {
+          lat: this.props.locationArray[i].lat,
+          lng: this.props.locationArray[i].lng,
+        },
+        label: labels[labelIndex += 1 % labels.length],
+        map: this.map,
+        icon: image,
+      });
+      const contentString = this.props.locationArray[i].name;
+      const infowindow = new window.google.maps.InfoWindow({
+        content: contentString,
+      });
+      marker.addListener('click', () => {
+        infowindow.open(this.map, marker);
+      });
+      this.markers.push(marker);
+    }
+  }
+
+  clearMarkers() {
+    for (let i = 0; i < this.markers.length; i += 1) {
+      this.markers[i].setMap(null);
+    }
+    this.markers = [];
+  }
+
   render() {
+    this.clearMarkers();
+    this.addMarkers();
+
     return (
       <div>
         <div className={cs.map} id="map" />
@@ -79,12 +82,16 @@ class Maps extends React.Component {
     );
   }
 }
+
 Maps.propTypes = {
-  locationArray: PropTypes.shape({
-    lat: PropTypes.number.isRequired,
-    lng: PropTypes.number.isRequired,
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired,
+  locationArray: PropTypes.arrayOf(
+    PropTypes.shape({
+      lat: PropTypes.number.isRequired,
+      lng: PropTypes.number.isRequired,
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  onNewLocation: PropTypes.func.isRequired,
 };
 export default Maps;
